@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import OtpInput from 'react-otp-input';
+import { useLocation } from 'react-router-dom';
+
 
 export default function Otp() {
+    const location = useLocation();
+    const { email } = location.state || {};
     const [otp, setOtp] = useState('');
-    const [email, setEmail] = useState('');
+    // const [email, setEmail] = useState('');
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -12,7 +17,7 @@ export default function Otp() {
                     OTP Verification
                 </h2>
                 <div className="mb-4">
-                    <label className="block text-gray-600 font-medium mb-2" htmlFor="email">
+                    <label className="block text-gray-600 font-medium mb-2 opacity-50  cursor-not-allowed" htmlFor="email" >
                         Email Address
                     </label>
                     <input
@@ -40,7 +45,7 @@ export default function Otp() {
                     />
                 </div>
                 <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition">
-                    Verify OTP
+                    Submit
                 </button>
             </div>
         </div>
