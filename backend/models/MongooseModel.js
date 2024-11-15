@@ -16,9 +16,9 @@ const createModel =new mongoDBModel.Schema({
     createdDate:{
         type:Date,
         default:Date.now,
-        expires: 60,
+        expires: 160,
     }
 })
 
-const exportingModel = mongoDBModel.model('temparyotpverification',createModel)
+const exportingModel = mongoDBModel.model('otpverifications',createModel)
 module.exports = exportingModel

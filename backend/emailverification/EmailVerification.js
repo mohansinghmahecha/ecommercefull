@@ -1,4 +1,5 @@
 const exportingModel = require('../models/MongooseModel')
+
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
 dotenv.config();
@@ -28,35 +29,34 @@ const createTempuse = async (req, res) => {
 
 
        
-           const mailOptions = {
-            from:  process.env.EMAIL_USER, // Sender's email address
-            to: email, // Recipient's email address
-            subject: 'Your Verification PIN',
-            html: `
-            <html>
-              <body>
-                <img src="cid:verification_image" alt="Verification Image" style="max-width: 100%; height: auto;"/>
+        //    const mailOptions = {
+        //     from:  process.env.EMAIL_USER, // Sender's email address
+        //     to: email, // Recipient's email address
+        //     subject: 'Your Verification PIN',
+        //     html: `
+        //     <html>
+        //       <body>
+        //         <img src="cid:verification_image" alt="Verification Image" style="max-width: 100%; height: auto;"/>
         
-                <h1 style="color: red;">Code Verification</h1>
+        //         <h1 style="color: red;">Code Verification</h1>
         
-                <p>Your verification code is: <strong>${verificationPin}</strong></p>
+        //         <p>Your verification code is: <strong>${verificationPin}</strong></p>
         
-                <p>This PIN will expire in 2 minutes.</p>
-              </body>
-            </html>
-          `, // HTML body
-          attachments: [
-            {
-              filename: 'verification_image.jpg', // Name the file
-              path: 'https://fastly.picsum.photos/id/764/536/354.jpg?hmac=tUClndcsRR7YYrBLrohEXgy_1dVqdKAzhNf4fCyN1O0', // Local path or URL to the image
-              cid: 'verification_image', // Unique identifier for the image
-            },
-          ],
-        };
+        //         <p>This PIN will expire in 2 minutes.</p>
+        //       </body>
+        //     </html>
+        //   `, // HTML body
+        //   attachments: [
+        //     {
+        //       filename: 'verification_image.jpg', // Name the file
+        //       path: 'https://fastly.picsum.photos/id/764/536/354.jpg?hmac=tUClndcsRR7YYrBLrohEXgy_1dVqdKAzhNf4fCyN1O0', // Local path or URL to the image
+        //       cid: 'verification_image', // Unique identifier for the image
+        //     },
+        //   ],
+        // };
 
-        // Send the email
-        await transporter.sendMail(mailOptions);
-
+        // // Send the email
+        // await transporter.sendMail(mailOptions);
 
         return res.status(200).json(emailTempInstance);
     } catch (error) {
@@ -64,5 +64,19 @@ const createTempuse = async (req, res) => {
     }
 };
 
-
-module.exports = {createTempuse}
+const findUsers = async (req, res) => {
+  const { email, verificationPin } = req.body;
+   try {
+      const user = await exportingModel.findOne({ email, verificationPin });
+      if (user) {
+          console.log("User found with OTP:", verificationPin); // Logging the OTP instead
+          res.json({ success: true, message: "OTP verified successfully!" });
+      } else {
+          res.status(400).json({ success: false, message: "Invalid OTP or email." });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+module.exports = {createTempuse,findUsers}

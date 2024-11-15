@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Otp from '../otp/Otp';
+import axios from 'axios';
+
+import { baseurl, createotp } from  '../../../apis';
+
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
@@ -9,7 +13,7 @@ export default function SignUp() {
     const [error, setError] = useState('');
     const navigate = useNavigate(); // Initialize useNavigate
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
             setError("Passwords do not match");
@@ -19,9 +23,23 @@ export default function SignUp() {
         // Handle signup logic here (e.g., API call)
         console.log('Email:', email);
         console.log('Password:', password);
+        console.log("apicalling",createotp)
+        const payload = {
+            email:email,
+            
+        }
+        try {
+            const response = await axios.post('http://localhost:5000/sendotp', payload);
+
+            console.log('OTP', response);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        navigate('/otp', { state: { email } });
+
+
 
         // Navigate to OTP verification page after successful signup
-        navigate('/otp', { state: { email } });
     };
 
     return (
